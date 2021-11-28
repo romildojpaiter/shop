@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shop/providers/cart.dart';
+import 'package:shop/widgets/badge.dart';
 import 'package:shop/widgets/product_grid.dart';
 
 enum FavoriteOptions { Favorite, All }
@@ -44,6 +47,17 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
               ),
             ],
           ),
+          // Inclusão do icone do carrinho no topo
+          Consumer<Cart>(
+            builder: (ctx, cart, _) => Badge(
+              value: cart.itemCount.toString(),
+              color: Theme.of(context).colorScheme.secondary,
+              child: IconButton(
+                icon: Icon(Icons.shopping_cart),
+                onPressed: () {},
+              ),
+            ),
+          )
         ],
       ),
       body: ProductGrid(

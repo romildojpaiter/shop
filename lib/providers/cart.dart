@@ -18,10 +18,18 @@ class CartItem {
 }
 
 class Cart with ChangeNotifier {
-  late Map<String, CartItem> _items;
+  // Inicializando o map
+  Map<String, CartItem> _items = {};
 
   Map<String, CartItem> get item {
     return {..._items};
+  }
+
+  /**
+   * Recupera o items de lementos no carrinho.
+   */
+  int get itemCount {
+    return _items.length;
   }
 
   void addItem(Product product) {
