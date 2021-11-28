@@ -4,7 +4,7 @@ import 'package:shop/providers/cart.dart';
 import 'package:shop/providers/products.dart';
 import 'package:shop/utils/app_routes.dart';
 import 'package:shop/views/cart_screen.dart';
-import 'package:shop/views/product_detail.dart';
+import 'package:shop/views/product_detail_screen.dart';
 import 'package:shop/views/product_overview_screen.dart';
 
 void main() => runApp(MyApp());
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
 
   _getRoutes(BuildContext ctx) {
     return {
-      AppRoutes.PRODUCT_DETAIL: (ctx) => ProductDetail(),
+      AppRoutes.PRODUCT_DETAIL: (ctx) => ProductDetailScreen(),
       AppRoutes.HOME: (ctx) => ProductOverviewScreen(),
       AppRoutes.CART: (ctx) => CartScreen(),
     };
