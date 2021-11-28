@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shop/providers/cart.dart';
 import 'package:shop/providers/products.dart';
 import 'package:shop/utils/app_routes.dart';
+import 'package:shop/views/cart_screen.dart';
 import 'package:shop/views/product_detail.dart';
 import 'package:shop/views/product_overview_screen.dart';
 
@@ -15,6 +16,7 @@ class MyApp extends StatelessWidget {
     return {
       AppRoutes.PRODUCT_DETAIL: (ctx) => ProductDetail(),
       AppRoutes.HOME: (ctx) => ProductOverviewScreen(),
+      AppRoutes.CART: (ctx) => CartScreen(),
     };
   }
 
@@ -37,6 +39,11 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.purple)
               .copyWith(secondary: Colors.deepOrange),
           fontFamily: 'Lato',
+          primaryTextTheme: TextTheme(
+            caption: TextStyle(
+              color: Colors.white,
+            ),
+          ),
         ),
         initialRoute: AppRoutes.HOME,
         routes: _getRoutes(context),
