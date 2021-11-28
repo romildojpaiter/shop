@@ -15,20 +15,23 @@ class CartItem {
     required this.quantity,
     required this.price,
   });
+
+  get totalValue =>
+      double.parse((this.price * this.quantity).toStringAsFixed(2));
 }
 
 class Cart with ChangeNotifier {
   // Inicializando o map
   Map<String, CartItem> _items = {};
 
-  Map<String, CartItem> get item {
+  Map<String, CartItem> get items {
     return {..._items};
   }
 
   /**
    * Recupera o items de lementos no carrinho.
    */
-  int get itemCount {
+  int get itemsCount {
     return _items.length;
   }
 

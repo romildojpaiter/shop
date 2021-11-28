@@ -52,7 +52,7 @@ class ProductItem extends StatelessWidget {
             color: Theme.of(context).colorScheme.secondary,
             onPressed: () {
               cart.addItem(product);
-              print(cart.itemCount);
+              print(cart.itemsCount);
             },
           ),
         ),
