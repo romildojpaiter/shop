@@ -17,16 +17,23 @@ class Order {
 }
 
 class Orders extends ChangeNotifier {
-  List<Order> _orders = [];
+  List<Order> _items = [];
 
-  List<Order> get orders {
-    return [..._orders];
+  List<Order> get items {
+    return [..._items];
+  }
+
+  /**
+   * Recupera o items de lementos no carrinho.
+   */
+  int get itemsCount {
+    return _items.length;
   }
 
   void addOrder(List<CartItem> products, double total) {
     // final combine = (t, i) => t + (i.price * i.quantity);
     // final totalp = products.fold(0.0, combine);
-    _orders.insert(
+    _items.insert(
       0,
       Order(
         id: Random().nextDouble().toString(),
