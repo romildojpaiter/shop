@@ -7,6 +7,13 @@ class Products with ChangeNotifier {
 
   List<Product> get items => [..._items];
 
+  /**
+   * Recupera o items de lementos no carrinho.
+   */
+  int get itemsCount {
+    return _items.length;
+  }
+
   List<Product> itemsFavorite(bool isFavorite) {
     return isFavorite
         ? _items.where((element) => element.isFavorite).toList()
