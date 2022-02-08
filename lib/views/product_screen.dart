@@ -2,11 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/providers/products.dart';
+import 'package:shop/utils/app_routes.dart';
 import 'package:shop/widgets/app_drawer.dart';
 import 'package:shop/widgets/product_item.dart';
 
-class ProductScreeem extends StatelessWidget {
-  const ProductScreeem({Key? key}) : super(key: key);
+class ProductScreeen extends StatelessWidget {
+  const ProductScreeen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,11 @@ class ProductScreeem extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pushNamed(
+                AppRoutes.PRODUCT_FORM,
+              );
+            },
           )
         ],
       ),
