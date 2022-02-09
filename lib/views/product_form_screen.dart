@@ -1,7 +1,7 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shop/providers/product.dart';
+import 'package:shop/providers/products.dart';
 
 class ProductFormScreen extends StatefulWidget {
   const ProductFormScreen({Key? key}) : super(key: key);
@@ -14,7 +14,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   final _priceFocusNode = FocusNode();
   final _descriptionFocusNode = FocusNode();
   final _imageUrlFocusNode = FocusNode();
-  final _imagrUrlController = TextEditingController();
+  final _imageUrlController = TextEditingController();
   final _form = GlobalKey<FormState>();
   final _formData = Map<String, Object>();
 
@@ -27,9 +27,42 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     _imageUrlFocusNode.addListener(_updateImageUrl);
   }
 
+  /**
+   * Recuperando o argumento passado no edit do product_item para
+   * o product_form.
+   */
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (_formData.isEmpty) {
+      final product = ModalRoute.of(context)!.settings.arguments as Product;
+      if (product != null) {
+        _formData['id'] = product.id;
+        _formData['title'] = product.title;
+        _formData['price'] = product.price;
+        _formData['description'] = product.description;
+        _formData['imageUrl'] = product.imageUrl;
+
+        _imageUrlController.text = _formData['imageUrl'].toString();
+      } else {
+        _formData['price'] = '';
+      }
+    }
+  }
+
   void _updateImageUrl() {
-    print('mudou');
-    setState(() {});
+    if (isValidUrl(_imageUrlController.text)) {
+      print('mudou url imager');
+      setState(() {});
+    }
+  }
+
+  bool isValidUrl(String url) {
+    return url.toLowerCase().startsWith(RegExp('https?:\/\/')) ||
+        (url.toLowerCase().endsWith('.png') ||
+            url.toLowerCase().endsWith('.jpg') ||
+            url.toLowerCase().endsWith('.jpeg'));
   }
 
   void _saveForm() {
@@ -40,17 +73,21 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     }
 
     _form.currentState!.save();
-    final newProduct = Product(
-      id: Random().nextDouble().toString(),
+    print(_formData.values);
+    final product = Product(
+      id: _formData['id'] as String,
       title: _formData['title'] as String,
       description: _formData['description'] as String,
       price: _formData['price'] as double,
       imageUrl: _formData['imageUrl'] as String,
     );
-    print(newProduct.title);
-    print(newProduct.description);
-    print(newProduct.price);
-    print(newProduct.imageUrl);
+    final provider = Provider.of<Products>(context, listen: false);
+    if (_formData['id'] == null) {
+      provider.addProduct(product);
+    } else {
+      provider.updateProduct(product);
+    }
+    Navigator.of(context).pop();
   }
 
   @override
@@ -83,6 +120,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           child: ListView(
             children: [
               TextFormField(
+                initialValue: _formData['title'].toString(),
                 decoration: InputDecoration(label: Text('Titulo')),
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (_) {
@@ -96,18 +134,17 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                   if (value.trim().length < 3) {
                     return 'Informe pelo menos 3 letras';
                   }
-
                   return null;
                 },
               ),
               TextFormField(
+                initialValue: _formData['price'].toString(),
                 decoration: InputDecoration(label: Text('Preço')),
                 focusNode: _priceFocusNode,
                 textInputAction: TextInputAction.next,
                 keyboardType: TextInputType.numberWithOptions(
                   decimal: true,
                 ),
-                initialValue: '0.0',
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_descriptionFocusNode);
                 },
@@ -115,11 +152,19 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                     _formData['price'] = double.parse(value ?? '0.0'),
               ),
               TextFormField(
+                initialValue: _formData['description'] as String,
                 decoration: InputDecoration(label: Text('Descrição')),
                 maxLines: 3,
                 keyboardType: TextInputType.multiline,
                 focusNode: _descriptionFocusNode,
                 onSaved: (value) => _formData['description'] = value!,
+                validator: (value) {
+                  bool empty = value!.trim().isEmpty;
+                  if (empty || (double.tryParse(value ?? '0')! >= 0)) {
+                    return 'Informe um Preço válido!';
+                  }
+                  return null;
+                },
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -130,8 +175,15 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                       keyboardType: TextInputType.url,
                       textInputAction: TextInputAction.done,
                       focusNode: _imageUrlFocusNode,
-                      controller: _imagrUrlController,
+                      controller: _imageUrlController,
                       onSaved: (value) => _formData['imageUrl'] = value!,
+                      validator: (value) {
+                        bool emptyUrl = value!.trim().isEmpty;
+                        if (emptyUrl || !isValidUrl(value)) {
+                          return 'Informe uma URL válida!';
+                        }
+                        return null;
+                      },
                       onFieldSubmitted: (_) {
                         _saveForm();
                       },
@@ -151,11 +203,11 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                       ),
                     ),
                     alignment: Alignment.center,
-                    child: _imagrUrlController.text.isEmpty
+                    child: _imageUrlController.text.isEmpty
                         ? Text('Informe a Url')
                         : FittedBox(
                             child: Image.network(
-                              _imagrUrlController.text,
+                              _imageUrlController.text,
                               fit: BoxFit.cover,
                             ),
                           ),
