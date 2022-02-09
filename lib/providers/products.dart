@@ -18,7 +18,7 @@ class Products with ChangeNotifier {
 
   List<Product> itemsFavorite(bool isFavorite) {
     return isFavorite
-        ? _items.where((element) => element.isFavorite).toList()
+        ? _items.where((prod) => prod.isFavorite).toList()
         : items;
   }
 
@@ -37,9 +37,17 @@ class Products with ChangeNotifier {
     if (product == null || product.id != null) {
       return;
     }
-    final index = _items.indexWhere((element) => element.id == product.id);
+    final index = _items.indexWhere((prod) => prod.id == product.id);
     if (index >= 0) {
       _items[index] = product;
+      notifyListeners();
+    }
+  }
+
+  void deleteProduct(String id) {
+    final index = _items.indexWhere((prod) => prod.id == id);
+    if (index >= 0) {
+      _items.removeWhere((prod) => prod.id == id);
       notifyListeners();
     }
   }
