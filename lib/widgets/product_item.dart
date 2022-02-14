@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shop/providers/product.dart';
+import 'package:shop/providers/products.dart';
 import 'package:shop/utils/app_routes.dart';
 
 class ProductItem extends StatelessWidget {
@@ -36,7 +38,7 @@ class ProductItem extends StatelessWidget {
                 color: Theme.of(context).errorColor,
                 icon: Icon(Icons.delete),
                 onPressed: () {
-                    Provider.of<Product>(context, listen: false).deleteProduct(product.id);
+                    Provider.of<Products>(context, listen: false).deleteProduct(product.id);
                 }
               )
             ],
