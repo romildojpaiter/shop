@@ -21,28 +21,50 @@ class ProductItem extends StatelessWidget {
       ),
       title: Text(product.title),
       trailing: Container(
-          width: 100,
-          child: Row(
-            children: [
-              IconButton(
-                color: Theme.of(context).primaryColor,
-                icon: Icon(Icons.edit),
-                onPressed: () {
-                  Navigator.of(context).pushNamed(
-                    AppRoutes.PRODUCT_FORM,
-                    arguments: product,
-                  );
-                },
-              ),
-              IconButton(
-                  color: Theme.of(context).errorColor,
-                  icon: Icon(Icons.delete),
-                  onPressed: () {
+        width: 100,
+        child: Row(
+          children: [
+            IconButton(
+              color: Theme.of(context).primaryColor,
+              icon: Icon(Icons.edit),
+              onPressed: () {
+                Navigator.of(context).pushNamed(
+                  AppRoutes.PRODUCT_FORM,
+                  arguments: product,
+                );
+              },
+            ),
+            IconButton(
+              color: Theme.of(context).errorColor,
+              icon: Icon(Icons.delete),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text('Excluir Produto'),
+                    content: Text('Tem certeza?'),
+                    actions: [
+                      TextButton(
+                        child: Text('Não'),
+                        onPressed: () => Navigator.of(context).pop(false),
+                      ),
+                      TextButton(
+                        child: Text('Sim'),
+                        onPressed: () => Navigator.of(context).pop(true),
+                      ),
+                    ],
+                  ),
+                ).then((value) {
+                  if (value) {
                     Provider.of<Products>(context, listen: false)
                         .deleteProduct(product.id);
-                  })
-            ],
-          )),
+                  }
+                });
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
