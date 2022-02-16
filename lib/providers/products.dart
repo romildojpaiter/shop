@@ -34,11 +34,10 @@ class Products with ChangeNotifier {
   }
 
   void updateProduct(Product product) {
-    if (product == null || product.id != null) {
-      return;
-    }
+    print(_items);
     final index = _items.indexWhere((prod) => prod.id == product.id);
     if (index >= 0) {
+      print('update product ${index}');
       _items[index] = product;
       notifyListeners();
     }

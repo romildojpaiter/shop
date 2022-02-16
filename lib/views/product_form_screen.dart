@@ -36,8 +36,9 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     super.didChangeDependencies();
 
     if (_formData.isEmpty) {
-      final product = ModalRoute.of(context)!.settings.arguments as Product;
-      if (product != null) {
+      final productArg = ModalRoute.of(context)!.settings.arguments;
+      if (productArg != null) {
+        final product = productArg as Product;
         _formData['id'] = product.id;
         _formData['title'] = product.title;
         _formData['price'] = product.price;
@@ -46,7 +47,11 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
 
         _imageUrlController.text = _formData['imageUrl'].toString();
       } else {
+        _formData['id'] = '';
+        _formData['title'] = '';
         _formData['price'] = '';
+        _formData['description'] = '';
+        _formData['imageUrl'] = '';
       }
     }
   }
@@ -82,7 +87,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
       imageUrl: _formData['imageUrl'] as String,
     );
     final provider = Provider.of<Products>(context, listen: false);
-    if (_formData['id'] == null) {
+    if (product.id.trim().isEmpty) {
       provider.addProduct(product);
     } else {
       provider.updateProduct(product);
@@ -159,8 +164,9 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                 focusNode: _descriptionFocusNode,
                 onSaved: (value) => _formData['description'] = value!,
                 validator: (value) {
+                  print("valor ${value}");
                   bool empty = value!.trim().isEmpty;
-                  if (empty || (double.tryParse(value ?? '0')! >= 0)) {
+                  if (empty) {
                     return 'Informe um Preço válido!';
                   }
                   return null;
