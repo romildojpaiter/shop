@@ -35,12 +35,12 @@ class ProductItem extends StatelessWidget {
                 },
               ),
               IconButton(
-                color: Theme.of(context).errorColor,
-                icon: Icon(Icons.delete),
-                onPressed: () {
-                    Provider.of<Products>(context, listen: false).deleteProduct(product.id);
-                }
-              )
+                  color: Theme.of(context).errorColor,
+                  icon: Icon(Icons.delete),
+                  onPressed: () {
+                    Provider.of<Products>(context, listen: false)
+                        .deleteProduct(product.id);
+                  })
             ],
           )),
     );
