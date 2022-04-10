@@ -99,11 +99,14 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           context: context,
           builder: (ctx) => AlertDialog(
             title: Text("Ocorreu um erro!"),
-            content: Text(error.toString()),
+            content: Text("Ocorreu um erro ao salvar o produto: " +
+                    error.toString() // TODO: Remover
+                ),
             actions: [
               TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text("Ok")),
+                child: Text("Ok"),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
             ],
           ),
         );

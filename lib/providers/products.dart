@@ -24,7 +24,7 @@ class Products with ChangeNotifier {
         : items;
   }
 
-  Future<void> addProduct(Product newProduct) {
+  Future<void> addProduct(Product newProduct) async {
     const _url = 'flutter-paiterdigital-default-rtdb.firebaseio.com';
     var _uri = Uri.https(_url, "/products.json");
 
