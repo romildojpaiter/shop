@@ -71,7 +71,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
             url.toLowerCase().endsWith('.jpeg'));
   }
 
-  void _saveForm() {
+  void _saveForm() async {
     var isValid = _form.currentState!.validate();
 
     if (!isValid) {
@@ -94,14 +94,15 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
 
     final provider = Provider.of<Products>(context, listen: false);
     if (product.id.trim().isEmpty) {
-      provider.addProduct(product).catchError((error) {
-        return showDialog<Null>(
+      try {
+        await provider.addProduct(product);
+        Navigator.of(context).pop();
+      } catch (error) {
+        showDialog<Null>(
           context: context,
           builder: (ctx) => AlertDialog(
             title: Text("Ocorreu um erro!"),
-            content: Text("Ocorreu um erro ao salvar o produto: " +
-                    error.toString() // TODO: Remover
-                ),
+            content: Text("Ocorreu um erro ao salvar o produto."),
             actions: [
               TextButton(
                 child: Text("Ok"),
@@ -110,12 +111,11 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
             ],
           ),
         );
-      }).then((_) {
+      } finally {
         setState(() {
           _isLoading = false;
         });
-        Navigator.of(context).pop();
-      });
+      }
     } else {
       provider.updateProduct(product);
       setState(() {

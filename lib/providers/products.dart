@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
@@ -28,25 +27,18 @@ class Products with ChangeNotifier {
     const _url = 'flutter-paiterdigital-default-rtdb.firebaseio.com';
     var _uri = Uri.https(_url, "/products.json");
 
-    return http.post(_uri, body: jsonEncode(newProduct)).then(
-      (response) {
-        if (response.statusCode == 200) {
-          _items.add(Product(
-              id: jsonDecode(response.body)['name'],
-              title: newProduct.title,
-              description: newProduct.description,
-              imageUrl: newProduct.imageUrl,
-              price: newProduct.price));
-          // Sempre que realizado um mudança notificamos os envolvidos com método abaixo
-          notifyListeners();
-        }
-      },
-    );
-    // Estratégia de capturar erros e tratar em tela!
-    // .catchError((error) {
-    //   print(error);
-    //   throw error;
-    // });
+    final response = await http.post(_uri, body: jsonEncode(newProduct));
+    print(jsonDecode(response.body));
+    if (response.statusCode == 200) {
+      _items.add(Product(
+          id: jsonDecode(response.body)['name'],
+          title: newProduct.title,
+          description: newProduct.description,
+          imageUrl: newProduct.imageUrl,
+          price: newProduct.price));
+      // Sempre que realizado um mudança notificamos os envolvidos com método abaixo
+      notifyListeners();
+    }
   }
 
   void updateProduct(Product product) {
