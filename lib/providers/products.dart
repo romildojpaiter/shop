@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -63,10 +65,23 @@ class Products with ChangeNotifier {
     }
   }
 
-  void updateProduct(Product product) {
-    print(_items);
+  Future<void> updateProduct(Product product) async {
+    if (product == null || product.id == null) {
+      return;
+    }
+
     final index = _items.indexWhere((prod) => prod.id == product.id);
     if (index >= 0) {
+      var _uri = Uri.https(_url, "/products/${product.id}.json");
+      await http.patch(
+        _uri,
+        body: json.encode({
+          'title': product.title,
+          'description': product.description,
+          'imageUrl': product.imageUrl,
+          'price': product.price,
+        }),
+      );
       print('update product ${index}');
       _items[index] = product;
       notifyListeners();
