@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
-import 'package:shop/data/dummy_data.dart';
 import 'package:shop/providers/product.dart';
 
 class Products with ChangeNotifier {
-  List<Product> _items = DUMMY_PRODUCTS;
+  final _url = 'flutter-paiterdigital-default-rtdb.firebaseio.com';
+  List<Product> _items = [];
 
   List<Product> get items => [..._items];
 
@@ -23,12 +23,34 @@ class Products with ChangeNotifier {
         : items;
   }
 
-  Future<void> addProduct(Product newProduct) async {
-    const _url = 'flutter-paiterdigital-default-rtdb.firebaseio.com';
+  /**
+   * Carrega os produtos vindo do firebase.
+   * Obs.: await aguarda a resposta da requisição
+   */
+  Future<void> loadProducts() async {
     var _uri = Uri.https(_url, "/products.json");
+    final response = await http.get(_uri);
+    Map<String, dynamic> data = jsonDecode(response.body);
+    _items.clear();
+    if (data != null) {
+      data.forEach((productId, productData) {
+        _items.add(Product(
+          id: productId,
+          title: productData['title'],
+          description: productData['description'],
+          imageUrl: productData['imageUrl'],
+          price: productData['price'],
+          isFavorite: productData['isFavorite'] ?? false,
+        ));
+      });
+      notifyListeners();
+    }
+    return Future.value();
+  }
 
+  Future<void> addProduct(Product newProduct) async {
+    var _uri = Uri.https(_url, "/products.json");
     final response = await http.post(_uri, body: jsonEncode(newProduct));
-    print(jsonDecode(response.body));
     if (response.statusCode == 200) {
       _items.add(Product(
           id: jsonDecode(response.body)['name'],

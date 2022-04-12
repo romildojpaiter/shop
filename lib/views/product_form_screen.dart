@@ -86,6 +86,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
       description: _formData['description'] as String,
       price: _formData['price'] as double,
       imageUrl: _formData['imageUrl'] as String,
+      isFavorite: false,
     );
 
     setState(() {
