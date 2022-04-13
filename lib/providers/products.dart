@@ -1,9 +1,10 @@
 // ignore_for_file: unnecessary_null_comparison
 
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shop/exceptions/http_exception.dart';
 import 'package:shop/providers/product.dart';
 
 class Products with ChangeNotifier {
@@ -88,11 +89,24 @@ class Products with ChangeNotifier {
     }
   }
 
-  void deleteProduct(String id) {
+  Future<void> deleteProduct(String id) async {
     final index = _items.indexWhere((prod) => prod.id == id);
     if (index >= 0) {
-      _items.removeWhere((prod) => prod.id == id);
+      final product = _items[index];
+      _items.remove(product);
       notifyListeners();
+
+      var _uri = Uri.https(_url, "/products/${product.id}.json");
+      final response = await http.delete(_uri);
+      print(response.statusCode);
+      if (response.statusCode != 200) {
+        print(
+            "[ERROR] Ocorreu um problema ao excluir o produto: ${product.id}");
+        _items.insert(index, product);
+        notifyListeners();
+        throw HttpException(
+            "Ocorreu um erro ao excluit o produto: ${product.title}");
+      }
     }
   }
 }
