@@ -4,11 +4,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shop/const/constantes.dart';
 import 'package:shop/exceptions/http_exception.dart';
 import 'package:shop/providers/product.dart';
 
 class Products with ChangeNotifier {
-  final _url = 'flutter-paiterdigital-default-rtdb.firebaseio.com';
   List<Product> _items = [];
 
   List<Product> get items => [..._items];
@@ -31,7 +31,7 @@ class Products with ChangeNotifier {
    * Obs.: await aguarda a resposta da requisição
    */
   Future<void> loadProducts() async {
-    var _uri = Uri.https(_url, "/products.json");
+    var _uri = Uri.https(Constantes.baseUrl, "/products.json");
     final response = await http.get(_uri);
     Map<String, dynamic> data = jsonDecode(response.body);
     _items.clear();
@@ -52,7 +52,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> addProduct(Product newProduct) async {
-    var _uri = Uri.https(_url, "/products.json");
+    var _uri = Uri.https(Constantes.baseUrl, "/products.json");
     final response = await http.post(_uri, body: jsonEncode(newProduct));
     if (response.statusCode == 200) {
       _items.add(Product(
@@ -73,7 +73,7 @@ class Products with ChangeNotifier {
 
     final index = _items.indexWhere((prod) => prod.id == product.id);
     if (index >= 0) {
-      var _uri = Uri.https(_url, "/products/${product.id}.json");
+      var _uri = Uri.https(Constantes.baseUrl, "/products/${product.id}.json");
       await http.patch(
         _uri,
         body: json.encode({
@@ -96,7 +96,7 @@ class Products with ChangeNotifier {
       _items.remove(product);
       notifyListeners();
 
-      var _uri = Uri.https(_url, "/products/${product.id}");
+      var _uri = Uri.https(Constantes.baseUrl, "/products/${product.id}");
       final response = await http.delete(_uri);
       print(response.statusCode);
       if (response.statusCode != 200) {
