@@ -96,16 +96,16 @@ class Products with ChangeNotifier {
       _items.remove(product);
       notifyListeners();
 
-      var _uri = Uri.https(_url, "/products/${product.id}.json");
+      var _uri = Uri.https(_url, "/products/${product.id}");
       final response = await http.delete(_uri);
       print(response.statusCode);
       if (response.statusCode != 200) {
         print(
-            "[ERROR] Ocorreu um problema ao excluir o produto: ${product.id}");
+            "[ERROR] Ocorreu um problema ao excluir o produto: ${product.id}.json");
         _items.insert(index, product);
         notifyListeners();
         throw HttpException(
-            "Ocorreu um erro ao excluit o produto: ${product.title}");
+            "Ocorreu um erro ao excluir o produto: ${product.title}");
       }
     }
   }

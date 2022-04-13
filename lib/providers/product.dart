@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class Product with ChangeNotifier {
   final String id;
@@ -17,12 +20,27 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  void toggleFavorite() {
+  void _toggleFavorite() {
     isFavorite = !isFavorite;
     notifyListeners();
   }
 
-  // Map toJson() => {"prop1": prop1, "prop2": prop2};
+  Future<void> toggleFavorite() async {
+    _toggleFavorite();
+    try {
+      final _url = 'flutter-paiterdigital-default-rtdb.firebaseio.com';
+      var _uri = Uri.https(_url, "/products/${this.id}.json");
+      final response =
+          await http.patch(_uri, body: json.encode({'isFavorite': isFavorite}));
+      if (response.statusCode != 200) {
+        print(
+            "[ERROR] Ocorreu um erro ao definir o produto, ${this.id}, como favorito!");
+        _toggleFavorite();
+      }
+    } catch (errror) {
+      _toggleFavorite();
+    }
+  }
 
   Map<String, dynamic> toJson() {
     return {
