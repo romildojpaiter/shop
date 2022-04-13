@@ -12,11 +12,12 @@ class Order {
   final List<CartItem> products;
   final DateTime date;
 
-  Order(
-      {required this.id,
-      required this.total,
-      required this.products,
-      required this.date});
+  Order({
+    required this.id,
+    required this.total,
+    required this.products,
+    required this.date,
+  });
 }
 
 class Orders extends ChangeNotifier {
@@ -63,5 +64,35 @@ class Orders extends ChangeNotifier {
       ),
     );
     notifyListeners();
+  }
+
+  Future<void> loadOrders() async {
+    var _uri = Uri.https(Constantes.baseUrl, "/orders.json");
+    final response = await http.get(_uri);
+    Map<String, dynamic> data = jsonDecode(response.body);
+    _items.clear();
+    if (data != null) {
+      data.forEach((orderId, orderData) {
+        _items.add(
+          Order(
+            id: orderId,
+            total: orderData['total'],
+            date: DateTime.parse(orderData['date']),
+            products: (orderData['products'] as List<dynamic>).map((cardItem) {
+              return CartItem(
+                id: cardItem['id'],
+                productId: cardItem['productId'],
+                title: cardItem['title'],
+                quantity: cardItem['quantity'],
+                price: cardItem['price'],
+              );
+            }).toList(),
+          ),
+        );
+      });
+      notifyListeners();
+    }
+    _items = _items.reversed.toList();
+    return Future.value();
   }
 }
