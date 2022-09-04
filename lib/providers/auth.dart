@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:shop/const/constantes.dart';
 
 class Auth with ChangeNotifier {
-  static const _keyApp = 'AIzaSyC7-__gzRJWSZvaCqSOU8x_HM8_nxhG7k4';
+  static const _keyApp = env.authorization;
   static const _uriSignUp = "/v1/accounts:signUp";
   static const _uriSignPassword = "v1/accounts:signInWithPassword";
   // "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${_keyApp}";
