@@ -14,7 +14,7 @@
 *.ipr
 *.iws
 .idea/
-.env
+.env*
 
 # Sistemas
 **/linux/

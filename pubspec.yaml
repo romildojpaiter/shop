@@ -26,6 +26,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
   http: ^0.13.4
+  flutter_dotenv: ^5.0.2
 
 dev_dependencies:
   flutter_test:
@@ -77,3 +78,7 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+# Inclusão do flutter_dotenv
+assets:
+  - .env
