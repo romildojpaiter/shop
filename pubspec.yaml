@@ -80,5 +80,5 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
 
 # Inclusão do flutter_dotenv
-assets:
-  - .env
+  assets:
+    - .env
