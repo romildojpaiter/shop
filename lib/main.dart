@@ -6,13 +6,12 @@ import 'package:shop/providers/cart.dart';
 import 'package:shop/providers/orders.dart';
 import 'package:shop/providers/products.dart';
 import 'package:shop/utils/app_routes.dart';
-import 'package:shop/views/auth_screen.dart';
 import 'package:shop/views/cart_screen.dart';
 import 'package:shop/views/orders_screen.dart';
 import 'package:shop/views/product_detail_screen.dart';
 import 'package:shop/views/product_form_screen.dart';
-import 'package:shop/views/product_overview_screen.dart';
 import 'package:shop/views/product_screen.dart';
+import 'package:shop/widgets/auth_or_home_screen.dart';
 
 // void main() => runApp(MyApp());
 Future<void> main() async {
@@ -25,9 +24,7 @@ class MyApp extends StatelessWidget {
 
   _getRoutes(BuildContext ctx) {
     return {
-      AppRoutes.AUTH: (ctx) => AuthScreen(),
-      AppRoutes.HOME: (ctx) => ProductOverviewScreen(),
-      AppRoutes.PRODUCTS_STORE: (ctx) => ProductOverviewScreen(),
+      AppRoutes.AUTH_HOME: (ctx) => AuthOrHomeScreen(),
       AppRoutes.PRODUCT_DETAIL: (ctx) => ProductDetailScreen(),
       AppRoutes.CART: (ctx) => CartScreen(),
       AppRoutes.ORDERS: (ctx) => OrdersScreen(),
@@ -70,7 +67,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
-        initialRoute: AppRoutes.AUTH,
+        initialRoute: AppRoutes.AUTH_HOME,
         routes: _getRoutes(context),
       ),
     );

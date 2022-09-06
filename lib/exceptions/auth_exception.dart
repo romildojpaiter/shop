@@ -8,7 +8,9 @@ class AuthException implements Exception {
     "CREDENTIAL_MISMATCH": "Credencial inválida",
     "TOKEN_EXPIRED": "Sessão expiradas",
     "USER_DISABLED": "Usuário desabilitado",
-    "USER_NOT_FOUND": "Usuário não encontrado"
+    "USER_NOT_FOUND": "E-mail ou Senha estão inválidos",
+    "EMAIL_NOT_FOUND": "E-mail ou Senha estão inválidos",
+    "INVALID_PASSWORD": "E-mail ou Senha estão inválidos"
   };
   final String key;
 
