@@ -13,7 +13,6 @@ import 'package:shop/views/product_form_screen.dart';
 import 'package:shop/views/product_screen.dart';
 import 'package:shop/widgets/auth_or_home_screen.dart';
 
-// void main() => runApp(MyApp());
 Future<void> main() async {
   await dotenv.load();
   runApp(MyApp());
