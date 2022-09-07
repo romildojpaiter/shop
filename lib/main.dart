@@ -13,6 +13,7 @@ import 'package:shop/views/product_form_screen.dart';
 import 'package:shop/views/product_screen.dart';
 import 'package:shop/widgets/auth_or_home_screen.dart';
 
+// void main() => runApp(MyApp());
 Future<void> main() async {
   await dotenv.load();
   runApp(MyApp());
@@ -37,16 +38,23 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => new Products(),
+          create: (_) => new Auth(),
+        ),
+        ChangeNotifierProxyProvider<Auth, Products>(
+          create: (_) => new Products(
+            null,
+            []
+          ),
+          update: (context, auth, previewsProdutcs) => new Products(
+            auth.token,
+            previewsProdutcs!.items,
+          ),
         ),
         ChangeNotifierProvider(
           create: (_) => new Cart(),
         ),
         ChangeNotifierProvider(
           create: (_) => new Orders(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => new Auth(),
         ),
       ],
       child: MaterialApp(

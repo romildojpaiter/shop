@@ -9,9 +9,12 @@ import 'package:shop/exceptions/http_exception.dart';
 import 'package:shop/providers/product.dart';
 
 class Products with ChangeNotifier {
+  //
   List<Product> _items = [];
-
   List<Product> get items => [..._items];
+  String? _token;
+
+  Products(this._token, this._items);
 
   /**
    * Recupera o items de lementos no carrinho.
@@ -31,7 +34,9 @@ class Products with ChangeNotifier {
    * Obs.: await aguarda a resposta da requisição
    */
   Future<void> loadProducts() async {
-    var _uri = Uri.https(Constantes.baseUrl, "/products.json");
+    Map<String, String> params = {"auth": _token!};
+    var _uri = Uri.https(Constantes.baseUrl, "/products.json", params);
+    print(_uri);
     final response = await http.get(_uri);
     Map<String, dynamic> data = jsonDecode(response.body);
     _items.clear();
