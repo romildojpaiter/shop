@@ -10,11 +10,13 @@ import 'package:shop/providers/product.dart';
 
 class Products with ChangeNotifier {
   //
-  List<Product> _items = [];
-  List<Product> get items => [..._items];
   String? _token;
+  List<Product> _items = [];
 
+  // Constructor
   Products(this._token, this._items);
+
+  List<Product> get items => [..._items];
 
   /**
    * Recupera o items de lementos no carrinho.
@@ -36,7 +38,6 @@ class Products with ChangeNotifier {
   Future<void> loadProducts() async {
     Map<String, String> params = {"auth": _token!};
     var _uri = Uri.https(Constantes.baseUrl, "/products.json", params);
-    print(_uri);
     final response = await http.get(_uri);
     Map<String, dynamic> data = jsonDecode(response.body);
     _items.clear();
@@ -57,7 +58,8 @@ class Products with ChangeNotifier {
   }
 
   Future<void> addProduct(Product newProduct) async {
-    var _uri = Uri.https(Constantes.baseUrl, "/products.json");
+    Map<String, String> params = {"auth": _token!};
+    var _uri = Uri.https(Constantes.baseUrl, "/products.json", params);
     final response = await http.post(_uri, body: jsonEncode(newProduct));
     if (response.statusCode == 200) {
       _items.add(Product(
@@ -72,13 +74,16 @@ class Products with ChangeNotifier {
   }
 
   Future<void> updateProduct(Product product) async {
+    Map<String, String> params = {"auth": _token!};
+
     if (product == null || product.id == null) {
       return;
     }
 
     final index = _items.indexWhere((prod) => prod.id == product.id);
     if (index >= 0) {
-      var _uri = Uri.https(Constantes.baseUrl, "/products/${product.id}.json");
+      var _uri =
+          Uri.https(Constantes.baseUrl, "/products/${product.id}.json", params);
       await http.patch(
         _uri,
         body: json.encode({

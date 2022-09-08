@@ -41,20 +41,21 @@ class MyApp extends StatelessWidget {
           create: (_) => new Auth(),
         ),
         ChangeNotifierProxyProvider<Auth, Products>(
-          create: (_) => new Products(
-            null,
-            []
-          ),
+          create: (_) => new Products(null, []),
           update: (context, auth, previewsProdutcs) => new Products(
             auth.token,
             previewsProdutcs!.items,
           ),
         ),
-        ChangeNotifierProvider(
-          create: (_) => new Cart(),
+        ChangeNotifierProxyProvider<Auth, Orders>(
+          create: (_) => new Orders(null, []),
+          update: (context, auth, previewsOrders) => new Orders(
+            auth.token,
+            previewsOrders!.items,
+          ),
         ),
         ChangeNotifierProvider(
-          create: (_) => new Orders(),
+          create: (_) => new Cart(),
         ),
       ],
       child: MaterialApp(

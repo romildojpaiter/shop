@@ -21,7 +21,10 @@ class Order {
 }
 
 class Orders extends ChangeNotifier {
+  String? _token;
   List<Order> _items = [];
+
+  Orders(this._token, this._items);
 
   List<Order> get items {
     return [..._items];
@@ -35,10 +38,9 @@ class Orders extends ChangeNotifier {
   }
 
   Future<void> addOrder(List<CartItem> products, double total) async {
-    // final combine = (t, i) => t + (i.price * i.quantity);
-    // final totalp = products.fold(0.0, combine);
     final date = DateTime.now();
-    var _uri = Uri.https(Constantes.baseUrl, "/orders.json");
+    Map<String, String> params = {"auth": _token!};
+    var _uri = Uri.https(Constantes.baseUrl, "/orders.json", params);
     final response = await http.post(_uri,
         body: jsonEncode({
           'total': total,
@@ -67,7 +69,8 @@ class Orders extends ChangeNotifier {
   }
 
   Future<void> loadOrders() async {
-    var _uri = Uri.https(Constantes.baseUrl, "/orders.json");
+    Map<String, String> params = {"auth": _token!};
+    var _uri = Uri.https(Constantes.baseUrl, "/orders.json", params);
     final response = await http.get(_uri);
     Map<String, dynamic> data = jsonDecode(response.body);
     _items.clear();
