@@ -11,10 +11,11 @@ import 'package:shop/providers/product.dart';
 class Products with ChangeNotifier {
   //
   String? _token;
+  String? _userId;
   List<Product> _items = [];
 
   // Constructor
-  Products(this._token, this._items);
+  Products([this._token, this._userId, this._items = const []]);
 
   List<Product> get items => [..._items];
 
@@ -38,18 +39,25 @@ class Products with ChangeNotifier {
   Future<void> loadProducts() async {
     Map<String, String> params = {"auth": _token!};
     var _uri = Uri.https(Constantes.baseUrl, "/products.json", params);
-    final response = await http.get(_uri);
-    Map<String, dynamic> data = jsonDecode(response.body);
+    final responseProduct = await http.get(_uri);
+
+    var _uriFav =
+        Uri.https(Constantes.baseUrl, "/userFavorites/$_userId.json", params);
+    final responseFav = await http.get(_uriFav);
+    final favMap = jsonDecode(responseFav.body);
+    print('Lista Fav: ${favMap}');
+    Map<String, dynamic> data = jsonDecode(responseProduct.body);
     _items.clear();
     if (data != null) {
       data.forEach((productId, productData) {
+        final isFavorite = favMap == null ? false : favMap[productId] ?? false;
         _items.add(Product(
           id: productId,
           title: productData['title'],
           description: productData['description'],
           imageUrl: productData['imageUrl'],
           price: productData['price'],
-          isFavorite: productData['isFavorite'] ?? false,
+          isFavorite: isFavorite,
         ));
       });
       notifyListeners();

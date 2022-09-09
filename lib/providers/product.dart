@@ -32,7 +32,7 @@ class Product with ChangeNotifier {
       Map<String, String> params = {"auth": token};
       var _uri = Uri.https(
         Constantes.baseUrl,
-        "/userFavorite/$userId/${this.id}.json",
+        "/userFavorites/$userId/${this.id}.json",
         params,
       );
       final response = await http.put(
