@@ -10,16 +10,20 @@ class Auth with ChangeNotifier {
   static const _uriSignUp = "/v1/accounts:signUp";
   static const _uriSignPassword = "v1/accounts:signInWithPassword";
   String? _token;
+  String? _userId;
   DateTime? _expireDate;
 
   String? get token {
-    print(_token);
     if (_token != null &&
         _expireDate != null &&
         _expireDate!.isAfter(DateTime.now())) {
       return _token;
     }
     return null;
+  }
+
+  String? get userId {
+    return isAuth ? _userId : null;
   }
 
   bool get isAuth {
@@ -64,6 +68,7 @@ class Auth with ChangeNotifier {
 
   void attrDataSession(responseBody) {
     _token = responseBody["idToken"];
+    _userId = responseBody["localId"];
     _expireDate = DateTime.now().add(
       Duration(seconds: int.parse(responseBody['expiresIn'])),
     );

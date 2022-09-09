@@ -26,14 +26,19 @@ class Product with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> toggleFavorite(String token) async {
+  Future<void> toggleFavorite(String token, String userId) async {
     _toggleFavorite();
     try {
       Map<String, String> params = {"auth": token};
-      var _uri =
-          Uri.https(Constantes.baseUrl, "/products/${this.id}.json", params);
-      final response =
-          await http.patch(_uri, body: json.encode({'isFavorite': isFavorite}));
+      var _uri = Uri.https(
+        Constantes.baseUrl,
+        "/userFavorite/$userId/${this.id}.json",
+        params,
+      );
+      final response = await http.put(
+        _uri,
+        body: json.encode(isFavorite),
+      );
       if (response.statusCode != 200) {
         print(
             "[ERROR] Ocorreu um erro ao definir o produto, ${this.id}, como favorito!");
