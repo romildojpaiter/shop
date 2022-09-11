@@ -22,9 +22,10 @@ class Order {
 
 class Orders extends ChangeNotifier {
   String? _token;
+  String? _userId;
   List<Order> _items = [];
 
-  Orders([this._token, this._items = const []]);
+  Orders([this._token, this._userId, this._items = const []]);
 
   List<Order> get items {
     return [..._items];
@@ -40,7 +41,7 @@ class Orders extends ChangeNotifier {
   Future<void> addOrder(List<CartItem> products, double total) async {
     final date = DateTime.now();
     Map<String, String> params = {"auth": _token!};
-    var _uri = Uri.https(Constantes.baseUrl, "/orders.json", params);
+    var _uri = Uri.https(Constantes.baseUrl, "/orders/$_userId.json", params);
     final response = await http.post(_uri,
         body: jsonEncode({
           'total': total,
@@ -70,32 +71,44 @@ class Orders extends ChangeNotifier {
 
   Future<void> loadOrders() async {
     Map<String, String> params = {"auth": _token!};
-    var _uri = Uri.https(Constantes.baseUrl, "/orders.json", params);
+    var _uri = Uri.https(Constantes.baseUrl, "/orders/$_userId.json", params);
     final response = await http.get(_uri);
-    Map<String, dynamic> data = jsonDecode(response.body);
-    _items.clear();
-    if (data != null) {
-      data.forEach((orderId, orderData) {
-        _items.add(
-          Order(
-            id: orderId,
-            total: orderData['total'],
-            date: DateTime.parse(orderData['date']),
-            products: (orderData['products'] as List<dynamic>).map((cardItem) {
-              return CartItem(
-                id: cardItem['id'],
-                productId: cardItem['productId'],
-                title: cardItem['title'],
-                quantity: cardItem['quantity'],
-                price: cardItem['price'],
-              );
-            }).toList(),
-          ),
-        );
-      });
-      notifyListeners();
+
+    switch (response.statusCode) {
+      case 200:
+        if (response.body == "null") {
+          print("Usuario: $_userId não tem pedidos");
+          _items.clear();
+          return Future.value();
+        }
+        Map<String, dynamic> data = jsonDecode(response.body);
+        _items.clear();
+        if (data != null) {
+          data.forEach((orderId, orderData) {
+            _items.add(
+              Order(
+                id: orderId,
+                total: orderData['total'],
+                date: DateTime.parse(orderData['date']),
+                products:
+                    (orderData['products'] as List<dynamic>).map((cardItem) {
+                  return CartItem(
+                    id: cardItem['id'],
+                    productId: cardItem['productId'],
+                    title: cardItem['title'],
+                    quantity: cardItem['quantity'],
+                    price: cardItem['price'],
+                  );
+                }).toList(),
+              ),
+            );
+          });
+          notifyListeners();
+        }
+        _items = _items.reversed.toList();
+        return Future.value();
+      default:
+        throw Exception(response.reasonPhrase);
     }
-    _items = _items.reversed.toList();
-    return Future.value();
   }
 }

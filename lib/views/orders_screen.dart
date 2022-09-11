@@ -27,13 +27,18 @@ class OrdersScreen extends StatelessWidget {
           } else {
             return Consumer<Orders>(
               builder: (ctx, orders, child) {
+                print(orders);
                 return RefreshIndicator(
                   onRefresh: () => _refreshOrders(context),
-                  child: ListView.builder(
-                    itemCount: orders.itemsCount,
-                    itemBuilder: (context, index) =>
-                        OrderWidget(order: orders.items[index]),
-                  ),
+                  child: orders.items.length > 0
+                      ? ListView.builder(
+                          itemCount: orders.itemsCount,
+                          itemBuilder: (context, index) =>
+                              OrderWidget(order: orders.items[index]),
+                        )
+                      : Center(
+                          child: const Text(
+                              'Você ainda não realizou nenhum pedido.')),
                 );
               },
             );
