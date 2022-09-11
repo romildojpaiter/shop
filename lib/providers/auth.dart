@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
@@ -12,6 +13,7 @@ class Auth with ChangeNotifier {
   String? _token;
   String? _userId;
   DateTime? _expireDate;
+  Timer? _logoutTimer;
 
   String? get token {
     if (_token != null &&
@@ -55,6 +57,10 @@ class Auth with ChangeNotifier {
     _token = null;
     _userId = null;
     _expireDate = null;
+    if (_logoutTimer != null) {
+      _logoutTimer?.cancel();
+      _logoutTimer = null;
+    }
     notifyListeners();
   }
 
@@ -79,6 +85,7 @@ class Auth with ChangeNotifier {
     _expireDate = DateTime.now().add(
       Duration(seconds: int.parse(responseBody['expiresIn'])),
     );
+    _autoLogout();
     notifyListeners();
   }
 
@@ -87,5 +94,13 @@ class Auth with ChangeNotifier {
       print("[ERROR] founded ${responseBody['error']}");
       throw AuthException(responseBody['error']['message']);
     }
+  }
+
+  void _autoLogout() {
+    if (_logoutTimer != null) {
+      _logoutTimer?.cancel();
+    }
+    final timeToLogout = _expireDate?.difference(DateTime.now()).inSeconds;
+    _logoutTimer = Timer(Duration(seconds: timeToLogout!), () => logout());
   }
 }
