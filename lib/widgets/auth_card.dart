@@ -114,8 +114,10 @@ class _AuthCardState extends State<AuthCard> {
                 onSaved: (newValue) => _authData['email'] = newValue!,
               ),
               TextFormField(
+                obscureText: true,
+                enableSuggestions: false,
+                autocorrect: false,
                 decoration: InputDecoration(label: Text('Senha')),
-                keyboardType: TextInputType.emailAddress,
                 controller: _passwordControler,
                 validator: (value) {
                   if (value!.isEmpty || value.length < 5) {
@@ -127,9 +129,10 @@ class _AuthCardState extends State<AuthCard> {
               ),
               if (checkSignup)
                 TextFormField(
-                  decoration: InputDecoration(label: Text('Confirmar Senha')),
-                  keyboardType: TextInputType.emailAddress,
                   obscureText: true,
+                  enableSuggestions: false,
+                  autocorrect: false,
+                  decoration: InputDecoration(label: Text('Confirmar Senha')),
                   validator: checkSignup
                       ? (value) {
                           if (value != _passwordControler.text) {
